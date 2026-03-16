@@ -10,16 +10,27 @@ A dashboard that makes Microsoft Planner data actually useful — built with Rea
 docker run -d --restart always -p 3000:80 ghcr.io/windoze95/plan-b:latest
 ```
 
-## Quick start (no config needed)
-
-1. `npm install && npm run dev`
-2. Grab a token from [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer) and paste it into the login screen
-3. That's it — tokens expire after ~1 hour, just paste a new one
+Open `http://localhost:3000`, grab a token from [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer), paste it in, done. Tokens expire after ~1 hour — just paste a new one.
 
 ## MSAL setup (optional, for persistent sign-in)
 
-If you want a "Sign in with Microsoft" button instead of pasting tokens:
+To get a "Sign in with Microsoft" button instead of pasting tokens, build the image with your Azure AD credentials:
 
 1. Register an app in Azure AD with `Tasks.Read`, `Tasks.Read.Shared`, `Group.Read.All`, `User.Read` permissions
-2. Copy `.env.example` to `.env` and fill in `VITE_TENANT_ID` and `VITE_CLIENT_ID`
-3. `npm install && npm run dev`
+2. Build and run with your credentials:
+
+```bash
+docker build \
+  --build-arg VITE_TENANT_ID=your-tenant-id \
+  --build-arg VITE_CLIENT_ID=your-client-id \
+  -t plan-b .
+
+docker run -d --restart always -p 3000:80 plan-b
+```
+
+## Development
+
+```bash
+cp .env.example .env  # fill in Azure AD IDs if using MSAL
+npm install && npm run dev
+```
