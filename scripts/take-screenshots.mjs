@@ -15,15 +15,49 @@ async function main() {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
 
-  // 1. Dashboard list view
+  // 1. Dashboard list view — with filters active to show them off
   console.log("Capturing list view...");
   await page.goto(BASE, { waitUntil: "networkidle0", timeout: 15000 });
-  await sleep(1000); // let animations settle
+  await sleep(1000);
+
+  // Helper: click a filter pill button by its visible text
+  async function clickPill(text, times = 1) {
+    for (let i = 0; i < times; i++) {
+      const btn = await page.evaluateHandle((t) => {
+        return [...document.querySelectorAll("button")].find(
+          (b) => b.textContent.replace(/[+−] ?/, "").trim() === t
+        );
+      }, text);
+      if (btn) {
+        await btn.click();
+        await sleep(200);
+      }
+    }
+  }
+
+  // Include "Active" status (1 click = include)
+  await clickPill("Active");
+  // Include "Feature" tag (1 click = include)
+  await clickPill("Feature");
+  // Exclude "Low" priority (2 clicks: include → exclude)
+  await clickPill("Low", 2);
+  await sleep(500);
+
   await page.screenshot({ path: `${OUT}/dashboard-list.png`, fullPage: true });
   console.log("  saved dashboard-list.png");
 
-  // 2. Kanban view
+  // 2. Kanban view — clear filters first
   console.log("Capturing kanban view...");
+  // Clear all filters
+  const clearBtn = await page.evaluateHandle(() => {
+    return [...document.querySelectorAll("button")].find(
+      (b) => b.textContent.includes("Clear")
+    );
+  });
+  if (clearBtn) {
+    await clearBtn.click();
+    await sleep(300);
+  }
   // Click the Kanban button
   const kanbanBtn = await page.evaluateHandle(() => {
     return [...document.querySelectorAll("button")].find(
