@@ -1,6 +1,4 @@
-# plan-b
-
-Because Planner was never plan A.
+# PLANner Board
 
 An alternative web UI for Microsoft Planner — built with React, Vite, and spite.
 
