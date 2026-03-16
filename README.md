@@ -7,7 +7,7 @@ A dashboard that makes Microsoft Planner data actually useful — built with Rea
 ## Run it
 
 ```bash
-docker run -d --restart always -p 3000:80 ghcr.io/YOUR_USERNAME/plan-b:latest
+docker run -d --restart always -p 3000:80 ghcr.io/windoze95/plan-b:latest
 ```
 
 ## Setup
