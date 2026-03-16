@@ -1,6 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import React, { Suspense, useState, useEffect, useCallback, useMemo } from "react";
+import { isDemoMode } from "./demo/isDemoMode";
 import AuthProvider from "./auth/AuthProvider";
 import { GraphAuthContext } from "./auth/AuthProvider";
+
+const DemoApp = isDemoMode ? React.lazy(() => import("./demo/DemoApp")) : null;
 import PlanSelector from "./components/PlanSelector";
 import DashboardShell from "./components/DashboardShell";
 import StatsCards from "./components/StatsCards";
@@ -18,6 +21,14 @@ import { computeStats, computeByBucket, computeByMonth } from "./utils/analytics
 import { theme } from "./utils/styles";
 
 export default function App() {
+  if (isDemoMode && DemoApp) {
+    return (
+      <Suspense fallback={<div style={{ color: "#e8e6e3", textAlign: "center", padding: 80 }}>Loading demo...</div>}>
+        <DemoApp />
+      </Suspense>
+    );
+  }
+
   return (
     <AuthProvider>
       <AuthenticatedApp />

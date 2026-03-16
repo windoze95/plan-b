@@ -4,6 +4,19 @@ Because Planner was never plan A.
 
 A dashboard that makes Microsoft Planner data actually useful — built with React, Vite, and spite.
 
+## Screenshots
+
+**Dashboard — List View**
+![Dashboard list view](docs/screenshots/dashboard-list.png)
+
+**Dashboard — Kanban Board**
+![Dashboard kanban view](docs/screenshots/dashboard-kanban.png)
+
+**Task Detail Panel**
+![Task detail panel](docs/screenshots/task-detail.png)
+
+> Try it yourself: `npm run dev` then open `http://localhost:5173/?demo`
+
 ## Run it
 
 ```bash
