@@ -1,0 +1,10 @@
+services:
+  plan-b:
+    image: ghcr.io/windoze95/plan-b:latest
+    restart: always
+    ports:
+      - "3000:80"
+    # Uncomment to enable "Sign in with Microsoft"
+    # environment:
+    #   - VITE_TENANT_ID=your-tenant-id
+    #   - VITE_CLIENT_ID=your-client-id
