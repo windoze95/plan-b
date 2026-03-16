@@ -2,7 +2,7 @@
 
 Because Planner was never plan A.
 
-A dashboard that makes Microsoft Planner data actually useful — built with React, Vite, and spite.
+An alternative web UI for Microsoft Planner — built with React, Vite, and spite.
 
 ## Screenshots
 
