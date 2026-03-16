@@ -14,18 +14,16 @@ Open `http://localhost:3000`, grab a token from [Graph Explorer](https://develop
 
 ## MSAL setup (optional, for persistent sign-in)
 
-To get a "Sign in with Microsoft" button instead of pasting tokens, build the image with your Azure AD credentials:
+To get a "Sign in with Microsoft" button instead of pasting tokens:
 
 1. Register an app in Azure AD with `Tasks.Read`, `Tasks.Read.Shared`, `Group.Read.All`, `User.Read` permissions
-2. Build and run with your credentials:
+2. Pass your credentials as env vars:
 
 ```bash
-docker build \
-  --build-arg VITE_TENANT_ID=your-tenant-id \
-  --build-arg VITE_CLIENT_ID=your-client-id \
-  -t plan-b .
-
-docker run -d --restart always -p 3000:80 plan-b
+docker run -d --restart always -p 3000:80 \
+  -e VITE_TENANT_ID=your-tenant-id \
+  -e VITE_CLIENT_ID=your-client-id \
+  ghcr.io/windoze95/plan-b:latest
 ```
 
 ## Development

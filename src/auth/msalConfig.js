@@ -2,7 +2,7 @@ import { TENANT_ID } from "../utils/constants";
 
 export const msalConfig = {
   auth: {
-    clientId: import.meta.env.VITE_CLIENT_ID || "",
+    clientId: window.__CONFIG__?.CLIENT_ID || import.meta.env.VITE_CLIENT_ID || "",
     authority: `https://login.microsoftonline.com/${TENANT_ID}`,
     redirectUri: typeof window !== "undefined" ? window.location.origin : "",
   },

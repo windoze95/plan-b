@@ -1,0 +1,4 @@
+window.__CONFIG__ = {
+  TENANT_ID: "${VITE_TENANT_ID}",
+  CLIENT_ID: "${VITE_CLIENT_ID}",
+};
