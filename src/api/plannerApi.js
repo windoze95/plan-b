@@ -9,6 +9,16 @@ export async function getPlanTasks(planId, token) {
   return graphFetchAll(`/planner/plans/${planId}/tasks`, token);
 }
 
+export async function getPlanTaskCounts(planId, token) {
+  const tasks = await graphFetchAll(
+    `/planner/plans/${planId}/tasks?$select=percentComplete`,
+    token
+  );
+  const total = tasks.length;
+  const active = tasks.filter((t) => t.percentComplete < 100).length;
+  return { active, total };
+}
+
 export async function getPlanBuckets(planId, token) {
   const data = await graphFetch(`/planner/plans/${planId}/buckets`, token);
   return data.value;

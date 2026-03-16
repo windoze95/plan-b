@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { getMyPlans } from "../api/plannerApi";
+import { getMyPlans, getPlanTaskCounts } from "../api/plannerApi";
 import { theme, cardBase, monoLabel } from "../utils/styles";
 
 export default function PlanSelector({ token, onSelect }) {
   const [plans, setPlans] = useState([]);
+  const [counts, setCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hovered, setHovered] = useState(null);
@@ -13,7 +14,18 @@ export default function PlanSelector({ token, onSelect }) {
     (async () => {
       try {
         const data = await getMyPlans(token);
-        if (!cancelled) setPlans(data);
+        if (!cancelled) {
+          setPlans(data);
+          // Fetch task counts in parallel
+          data.forEach(async (plan) => {
+            try {
+              const c = await getPlanTaskCounts(plan.id, token);
+              if (!cancelled) {
+                setCounts((prev) => ({ ...prev, [plan.id]: c }));
+              }
+            } catch {}
+          });
+        }
       } catch (e) {
         if (!cancelled) setError(e.message);
       } finally {
@@ -101,14 +113,40 @@ export default function PlanSelector({ token, onSelect }) {
                 transition: "all 0.2s ease",
               }}
             >
-              <div
-                style={{
-                  fontSize: 15,
-                  color: theme.text,
-                  fontWeight: 500,
-                }}
-              >
-                {plan.title}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div
+                  style={{
+                    fontSize: 15,
+                    color: theme.text,
+                    fontWeight: 500,
+                  }}
+                >
+                  {plan.title}
+                </div>
+                {counts[plan.id] ? (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: theme.textMuted,
+                      fontFamily: theme.fontMono,
+                      whiteSpace: "nowrap",
+                      marginLeft: 12,
+                    }}
+                  >
+                    <span style={{ color: theme.blue }}>{counts[plan.id].active}</span>
+                    /{counts[plan.id].total} active
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: theme.textDark,
+                      fontFamily: theme.fontMono,
+                    }}
+                  >
+                    ...
+                  </div>
+                )}
               </div>
               {plan.owner && plan.owner.user && (
                 <div
