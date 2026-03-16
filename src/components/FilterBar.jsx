@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { theme, monoLabel } from "../utils/styles";
 import { PRIORITY_MAP, PRIORITY_COLOR } from "../utils/constants";
 
@@ -72,9 +73,110 @@ export default function FilterBar({
   totalCount,
 }) {
   const uniqueBuckets = [...new Set(Object.values(bucketNames))].sort();
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem("plannerdash_filters_collapsed") === "1"; } catch { return false; }
+  });
+
+  // Collect active pills for collapsed view
+  const activePills = [];
+  statusOptions.forEach(([v, l, c]) => {
+    const state = filters.statuses[v];
+    if (state) activePills.push({ key: `s-${v}`, label: l, state, color: c, onClick: () => setFilter("statuses", cycleState(filters.statuses, v)) });
+  });
+  priorityOptions.forEach(([v, l, c]) => {
+    const state = filters.priorities[v];
+    if (state) activePills.push({ key: `p-${v}`, label: l, state, color: c, onClick: () => setFilter("priorities", cycleState(filters.priorities, v)) });
+  });
+  Object.values(tagNames).forEach((name) => {
+    const state = filters.tags[name];
+    if (state) activePills.push({ key: `t-${name}`, label: name, state, color: "#af52de", onClick: () => setFilter("tags", cycleState(filters.tags, name)) });
+  });
+  if (filters.bucket !== "all") activePills.push({ key: "bucket", label: filters.bucket, state: "include", color: "#3b82f6", onClick: () => setFilter("bucket", "all") });
+  if (filters.overdueOnly) activePills.push({ key: "overdue", label: "Overdue only", state: "include", color: "#ff3b30", onClick: () => setFilter("overdueOnly", false) });
+  if (filters.search) activePills.push({ key: "search", label: `"${filters.search}"`, state: "include", color: "#3b82f6", onClick: () => setFilter("search", "") });
+  if (filters.dateFrom) activePills.push({ key: "dateFrom", label: `From ${filters.dateFrom}`, state: "include", color: "#3b82f6", onClick: () => setFilter("dateFrom", "") });
+  if (filters.dateTo) activePills.push({ key: "dateTo", label: `To ${filters.dateTo}`, state: "include", color: "#3b82f6", onClick: () => setFilter("dateTo", "") });
+
+  const toggleCollapsed = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    try { localStorage.setItem("plannerdash_filters_collapsed", next ? "1" : "0"); } catch {}
+  };
+
+  if (collapsed) {
+    return (
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+          <button
+            onClick={toggleCollapsed}
+            style={{
+              padding: "4px 12px",
+              borderRadius: 16,
+              border: `1px solid ${theme.borderLight}`,
+              background: "transparent",
+              color: theme.textMuted,
+              fontSize: 11,
+              cursor: "pointer",
+              fontFamily: theme.fontSans,
+            }}
+          >
+            Filters
+          </button>
+          {activePills.map((p) => (
+            <button
+              key={p.key}
+              onClick={p.onClick}
+              style={triPillStyle(p.state, p.color)}
+            >
+              {p.state === "include" ? "+ " : p.state === "exclude" ? "\u2212 " : ""}{p.label}
+            </button>
+          ))}
+          {activeFilterCount > 0 && (
+            <button
+              onClick={clearFilters}
+              style={{
+                padding: "4px 12px",
+                borderRadius: 16,
+                border: `1px solid ${theme.borderLight}`,
+                background: "transparent",
+                color: theme.textMuted,
+                fontSize: 11,
+                cursor: "pointer",
+                fontFamily: theme.fontSans,
+              }}
+            >
+              Clear {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}
+            </button>
+          )}
+          <div style={{ marginLeft: "auto", fontSize: 12, color: theme.textDark, fontFamily: theme.fontMono }}>
+            Showing {resultCount} of {totalCount} tasks
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ marginBottom: 20 }}>
+      {/* Collapse button */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+        <button
+          onClick={toggleCollapsed}
+          style={{
+            padding: "4px 12px",
+            borderRadius: 16,
+            border: `1px solid ${theme.borderLight}`,
+            background: "transparent",
+            color: theme.textMuted,
+            fontSize: 11,
+            cursor: "pointer",
+            fontFamily: theme.fontSans,
+          }}
+        >
+          Minimize
+        </button>
+      </div>
+
       {/* Search */}
       <input
         type="text"

@@ -63,7 +63,7 @@ export default function PlanSelector({ token, onSelect }) {
       />
 
       <div style={{ maxWidth: 520, width: "100%", padding: "0 24px" }}>
-        <div style={{ ...monoLabel, marginBottom: 8 }}>PlannerDash</div>
+        <div style={{ ...monoLabel, marginBottom: 8 }}>PlanB</div>
         <h2
           style={{
             color: theme.text,

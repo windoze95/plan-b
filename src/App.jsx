@@ -59,6 +59,7 @@ function AppContent({ auth }) {
   const { token, logout, recordFailure } = auth;
   const [selectedPlan, setSelectedPlan] = useState(loadSavedPlan);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [showMetrics, setShowMetrics] = useState(false);
   const [viewMode, setViewMode] = useState(() => {
     try { return localStorage.getItem("plannerdash_view") || "list"; } catch { return "list"; }
   });
@@ -175,8 +176,7 @@ function AppContent({ auth }) {
     setSelectedPlan(null);
     setSelectedTask(null);
     clearDetails();
-    clearFilters();
-  }, [clearDetails, clearFilters]);
+  }, [clearDetails]);
 
   const stats = useMemo(() => computeStats(tasks), [tasks]);
   const byBucket = useMemo(
@@ -201,6 +201,7 @@ function AppContent({ auth }) {
         taskCount={tasks.length}
         completedCount={stats.completed}
         activeCount={stats.inProgress + stats.notStarted}
+        onMetrics={tasks.length > 0 ? () => setShowMetrics(true) : undefined}
       >
         {/* Error banner */}
         {error && error !== "auth_expired" && (
@@ -253,13 +254,6 @@ function AppContent({ auth }) {
         {/* Dashboard content */}
         {tasks.length > 0 && (
           <>
-            <StatsCards stats={stats} total={tasks.length} />
-            <VelocityChart monthData={monthData} />
-            <BucketBreakdown
-              byBucket={byBucket}
-              selectedBucket={filters.bucket}
-              onBucketClick={(b) => setFilter("bucket", b)}
-            />
             {/* View toggle + kanban grouping */}
             <div style={{ display: "flex", gap: 4, marginBottom: 16, alignItems: "center", flexWrap: "wrap" }}>
               {[["list", "List"], ["kanban", "Kanban"]].map(([v, l]) => (
@@ -345,6 +339,68 @@ function AppContent({ auth }) {
           </>
         )}
       </DashboardShell>
+
+      {/* Metrics modal */}
+      {showMetrics && (
+        <div
+          onClick={() => setShowMetrics(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100,
+            background: "rgba(0,0,0,0.7)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "90vw",
+              maxWidth: 1100,
+              maxHeight: "85vh",
+              overflow: "auto",
+              background: theme.surface,
+              border: `1px solid ${theme.borderLight}`,
+              borderRadius: 16,
+              padding: "32px 36px",
+              position: "relative",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <div style={{ fontFamily: theme.fontMono, fontSize: 11, color: theme.textDim, letterSpacing: 2, textTransform: "uppercase" }}>
+                Metrics
+              </div>
+              <button
+                onClick={() => setShowMetrics(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: theme.textMuted,
+                  fontSize: 20,
+                  cursor: "pointer",
+                  padding: "4px 8px",
+                  lineHeight: 1,
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <StatsCards stats={stats} total={tasks.length} />
+            <VelocityChart monthData={monthData} />
+            <BucketBreakdown
+              byBucket={byBucket}
+              selectedBucket={filters.bucket}
+              onBucketClick={(b) => {
+                setFilter("bucket", b);
+                setShowMetrics(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Task detail panel */}
       {selectedTask && (

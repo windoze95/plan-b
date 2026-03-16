@@ -6,14 +6,11 @@ A dashboard that makes Microsoft Planner data actually useful — built with Rea
 
 ## Screenshots
 
-**Dashboard — List View**
-![Dashboard list view](docs/screenshots/dashboard-list.png)
-
-**Dashboard — Kanban Board**
-![Dashboard kanban view](docs/screenshots/dashboard-kanban.png)
-
-**Task Detail Panel**
-![Task detail panel](docs/screenshots/task-detail.png)
+| Metrics | Task Detail |
+|---------|-------------|
+| ![Metrics](docs/screenshots/dashboard-metrics.png) | ![Task detail](docs/screenshots/task-detail.png) |
+| **List View** | **Kanban Board** |
+| ![List view](docs/screenshots/dashboard-list.png) | ![Kanban view](docs/screenshots/dashboard-kanban.png) |
 
 > Try it yourself: `npm run dev` then open `http://localhost:5173/?demo`
 

@@ -198,7 +198,7 @@ export default function AuthProvider({ children }) {
           width: "100%",
         }}
       >
-        <div style={{ ...monoLabel, marginBottom: 8 }}>PlannerDash</div>
+        <div style={{ ...monoLabel, marginBottom: 8 }}>PlanB</div>
         <h2
           style={{
             color: theme.text,

@@ -11,6 +11,7 @@ export default function DashboardShell({
   taskCount,
   completedCount,
   activeCount,
+  onMetrics,
   children,
 }) {
   const [mounted, setMounted] = useState(false);
@@ -72,7 +73,7 @@ export default function DashboardShell({
             opacity: mounted ? 1 : 0,
             transform: mounted ? "translateY(0)" : "translateY(20px)",
             transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
-            marginBottom: 48,
+            marginBottom: 24,
           }}
         >
           <div
@@ -97,21 +98,7 @@ export default function DashboardShell({
               >
                 {planTitle} · Planner Board
               </div>
-              <h1
-                style={{
-                  fontSize: "clamp(32px, 5vw, 52px)",
-                  fontWeight: 700,
-                  margin: 0,
-                  background:
-                    "linear-gradient(135deg, #e8e6e3 0%, #8e8e93 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  letterSpacing: -1,
-                }}
-              >
-                Project Velocity
-              </h1>
-              <div
+<div
                 style={{ fontSize: 14, color: theme.textDim, marginTop: 4 }}
               >
                 {taskCount} tasks tracked · {completedCount} shipped ·{" "}
@@ -119,6 +106,24 @@ export default function DashboardShell({
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+              {onMetrics && (
+                <button
+                  onClick={onMetrics}
+                  style={{
+                    padding: "8px 16px",
+                    background: "rgba(59,130,246,0.10)",
+                    border: "1px solid rgba(59,130,246,0.3)",
+                    borderRadius: 8,
+                    color: "#93c5fd",
+                    fontSize: 12,
+                    cursor: "pointer",
+                    fontFamily: theme.fontSans,
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Metrics
+                </button>
+              )}
               <RefreshButton onClick={onRefresh} loading={loading} />
               <button
                 onClick={onChangePlan}
@@ -157,19 +162,6 @@ export default function DashboardShell({
         </div>
 
         {children}
-
-        {/* Footer */}
-        <div
-          style={{
-            textAlign: "center",
-            padding: "48px 0 24px",
-            fontSize: 11,
-            color: theme.textDarkest,
-            fontFamily: theme.fontMono,
-          }}
-        >
-          PlannerDash · {taskCount} tasks · {new Date().toLocaleDateString()}
-        </div>
       </div>
     </div>
   );
