@@ -273,11 +273,13 @@ function KanbanCard({ task, onTaskClick, onDragStart }) {
           : hovered
             ? "rgba(255,255,255,0.05)"
             : "rgba(255,255,255,0.025)",
-        border: `1px solid ${dragging ? "rgba(59,130,246,0.3)" : hovered ? "rgba(255,255,255,0.1)" : theme.border}`,
+        borderTop: `1px solid ${dragging ? "rgba(59,130,246,0.3)" : hovered ? "rgba(255,255,255,0.1)" : theme.border}`,
+        borderRight: `1px solid ${dragging ? "rgba(59,130,246,0.3)" : hovered ? "rgba(255,255,255,0.1)" : theme.border}`,
+        borderBottom: `1px solid ${dragging ? "rgba(59,130,246,0.3)" : hovered ? "rgba(255,255,255,0.1)" : theme.border}`,
+        borderLeft: `3px solid ${statusColor}`,
         borderRadius: 8,
         cursor: "grab",
         transition: "all 0.15s ease",
-        borderLeft: `3px solid ${statusColor}`,
         opacity: dragging ? 0.5 : 1,
       }}
     >
